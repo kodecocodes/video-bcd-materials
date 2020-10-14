@@ -43,15 +43,17 @@ final class NewListViewController: UIViewController {
   }
   
   @IBAction func done(_ sender: Any) {
-    guard let title = textField.text, let context = self.context else { return }
+    guard let title = textField.text else { return }
+    
+    guard let context = context else { return }
     let newList = List(context: context)
     newList.title = title
-    
+
     do {
       try context.save()
       dismiss(animated: true, completion: nil)
     } catch {
-      fatalError("Core Data Save error")
+      fatalError("Core Data save error")
     }
   }
   

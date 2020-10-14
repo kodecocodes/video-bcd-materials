@@ -34,11 +34,31 @@ import CoreData
 import UIKit
 
 class ListViewController: UITableViewController {
+
   var context: NSManagedObjectContext?
-  
+
+  private lazy var fetchedResultsController: NSFetchedResultsController<List> = {
+    let fetchRequest: NSFetchRequest<List> = List.fetchRequest()
+    fetchRequest.fetchLimit = 20
+    let sortDescriptor = NSSortDescriptor(key: "title", ascending:  false)
+    fetchRequest.sortDescriptors = [sortDescriptor]
+    let frc = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                         managedObjectContext: context!,
+                                         sectionNameKeyPath: nil,
+                                         cacheName: nil)
+    return frc
+  }()
+
   override func viewDidLoad() {
     super.viewDidLoad()
     setupViews()
+
+    do {
+      try fetchedResultsController.performFetch()
+      tableView.reloadData()
+    } catch {
+      fatalError("Core Data fetch error")
+    }
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -70,26 +90,32 @@ extension ListViewController {
     guard let indexPath = tableView.indexPathForSelectedRow else {
       return
     }
-    
-    remindersViewController.context = self.context
+
+    remindersViewController.context = context
   }
   
   private func handleAddNewListSegue(newListViewController: NewListViewController) {
-    newListViewController.context = self.context
+    newListViewController.context = context
   }
 }
 
 // MARK: - Table View -
 extension ListViewController {
   override func numberOfSections(in tableView: UITableView) -> Int {
-    return 0
+    return fetchedResultsController.sections?.count ?? 0
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 0
+    guard let sectionInfo = fetchedResultsController.sections?[section] else { return 0 }
+    return sectionInfo.numberOfObjects
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    return UITableViewCell()
+
+    let cell = tableView.dequeueReusableCell(withIdentifier: "ListCell", for: indexPath)
+    let list = fetchedResultsController.object(at: indexPath)
+
+    cell.textLabel?.text = list.title
+    return cell
   }
 }

@@ -34,23 +34,25 @@ import CoreData
 import UIKit
 
 class ListViewController: UITableViewController {
+
   var context: NSManagedObjectContext?
-  
+
   private lazy var fetchedResultsController: NSFetchedResultsController<List> = {
     let fetchRequest: NSFetchRequest<List> = List.fetchRequest()
     fetchRequest.fetchLimit = 20
-    
-    let sortDescriptor = NSSortDescriptor(key: "title", ascending: false)
+    let sortDescriptor = NSSortDescriptor(key: "title", ascending:  false)
     fetchRequest.sortDescriptors = [sortDescriptor]
-    
-    let frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.context!, sectionNameKeyPath: nil, cacheName: nil)
+    let frc = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                         managedObjectContext: context!,
+                                         sectionNameKeyPath: nil,
+                                         cacheName: nil)
     return frc
   }()
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
     setupViews()
-    
+
     do {
       try fetchedResultsController.performFetch()
       tableView.reloadData()
@@ -88,12 +90,12 @@ extension ListViewController {
     guard let indexPath = tableView.indexPathForSelectedRow else {
       return
     }
-    
-    remindersViewController.context = self.context
+
+    remindersViewController.context = context
   }
   
   private func handleAddNewListSegue(newListViewController: NewListViewController) {
-    newListViewController.context = self.context
+    newListViewController.context = context
   }
 }
 
@@ -109,10 +111,11 @@ extension ListViewController {
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
     let cell = tableView.dequeueReusableCell(withIdentifier: "ListCell", for: indexPath)
     let list = fetchedResultsController.object(at: indexPath)
+
     cell.textLabel?.text = list.title
-    
     return cell
   }
 }

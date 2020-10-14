@@ -30,55 +30,55 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
-import UIKit
 import CoreData
+import UIKit
 
 class RemindersViewController: UITableViewController, NSFetchedResultsControllerDelegate {
   var list: List?
   var context: NSManagedObjectContext?
-  
+
   private lazy var fetchedResultsController: NSFetchedResultsController<Reminder> = {
     let fetchRequest: NSFetchRequest<Reminder> = Reminder.fetchRequest()
     let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
     fetchRequest.sortDescriptors = [sortDescriptor]
-    
-    let predicate = NSPredicate(format: "%K == %@", "list.title", self.list!.title)
+    let predicate = NSPredicate(format: "%K == %@", "list.title", list!.title)
     fetchRequest.predicate = predicate
-    
-    let frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.context!, sectionNameKeyPath: nil, cacheName: nil)
+    let frc = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                         managedObjectContext: context!,
+                                         sectionNameKeyPath: nil,
+                                         cacheName: nil)
     frc.delegate = self
     return frc
   }()
-  
+
   lazy var dataSource: UITableViewDiffableDataSource<String, NSManagedObjectID> = {
-    let dataSource = UITableViewDiffableDataSource<String, NSManagedObjectID>(tableView: tableView) { (tableView, indexPath, objectId) -> UITableViewCell? in
-      guard let reminder = try? self.context?.existingObject(with: objectId) as? Reminder else {
-        return nil
-      }
-      
-      let cell = UITableViewCell(style: .default, reuseIdentifier: "ReminderCell")
-      cell.textLabel?.text = reminder.title
-      return cell
+    let dataSource = UITableViewDiffableDataSource<String, NSManagedObjectID>(tableView: tableView) {
+      (tableView, indexPath, objectId) -> UITableViewCell? in
+        guard let reminder = try? self.context?.existingObject(with: objectId) as? Reminder else {
+          return nil
+        }
+        let cell = UITableViewCell(style: .default, reuseIdentifier: "ReminderCell")
+        cell.textLabel?.text = reminder.title
+        return cell
     }
-    
     tableView.dataSource = dataSource
     return dataSource
   }()
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
-    
     do {
       try fetchedResultsController.performFetch()
     } catch {
       fatalError("Core Data fetch error")
     }
   }
-  
+
   func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
     let remindersSnapshot = snapshot as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
     dataSource.apply(remindersSnapshot)
   }
+
 }
 
 extension RemindersViewController {
@@ -98,8 +98,8 @@ extension RemindersViewController {
       return
     }
     
-    newReminderViewController.context = self.context
-    newReminderViewController.list = self.list
+    newReminderViewController.context = context
+    newReminderViewController.list = list
   }
 }
 

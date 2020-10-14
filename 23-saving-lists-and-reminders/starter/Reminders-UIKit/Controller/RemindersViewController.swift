@@ -30,10 +30,12 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
+import CoreData
 import UIKit
 
 class RemindersViewController: UITableViewController {
   var list: List?
+  var context: NSManagedObjectContext?
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -57,7 +59,8 @@ extension RemindersViewController {
       return
     }
     
-    // Add code here
+    newReminderViewController.context = context
+    newReminderViewController.list = list
   }
 }
 

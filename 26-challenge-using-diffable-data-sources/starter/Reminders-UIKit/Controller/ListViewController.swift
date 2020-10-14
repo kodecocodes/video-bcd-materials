@@ -34,27 +34,28 @@ import CoreData
 import UIKit
 
 class ListViewController: UITableViewController, NSFetchedResultsControllerDelegate {
+
   var context: NSManagedObjectContext?
-  
+
   private lazy var fetchedResultsController: NSFetchedResultsController<List> = {
     let fetchRequest: NSFetchRequest<List> = List.fetchRequest()
     fetchRequest.fetchLimit = 20
-    
-    let sortDescriptor = NSSortDescriptor(key: "title", ascending: false)
+    let sortDescriptor = NSSortDescriptor(key: "title", ascending:  false)
     fetchRequest.sortDescriptors = [sortDescriptor]
-    
-    let frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.context!, sectionNameKeyPath: nil, cacheName: nil)
+    let frc = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                         managedObjectContext: context!,
+                                         sectionNameKeyPath: nil,
+                                         cacheName: nil)
     frc.delegate = self
     return frc
   }()
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
     setupViews()
-    
+
     do {
       try fetchedResultsController.performFetch()
-      tableView.reloadData()
     } catch {
       fatalError("Core Data fetch error")
     }
@@ -78,15 +79,16 @@ class ListViewController: UITableViewController, NSFetchedResultsControllerDeleg
     default: return
     }
   }
-  
+
   // MARK: - Fetched Results Controller Delegate -
+
   func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
     tableView.beginUpdates()
   }
-  
+
   func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
     guard let list = anObject as? List else { return }
-    
+
     switch type {
     case .insert:
       guard let newIndexPath = newIndexPath else { return }
@@ -103,10 +105,11 @@ class ListViewController: UITableViewController, NSFetchedResultsControllerDeleg
     default: return
     }
   }
-  
+
   func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
     tableView.endUpdates()
   }
+
 }
 
 extension ListViewController {
@@ -118,12 +121,12 @@ extension ListViewController {
     guard let indexPath = tableView.indexPathForSelectedRow else {
       return
     }
-    
-    remindersViewController.context = self.context
+
+    remindersViewController.context = context
   }
   
   private func handleAddNewListSegue(newListViewController: NewListViewController) {
-    newListViewController.context = self.context
+    newListViewController.context = context
   }
 }
 
@@ -139,10 +142,11 @@ extension ListViewController {
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
     let cell = tableView.dequeueReusableCell(withIdentifier: "ListCell", for: indexPath)
     let list = fetchedResultsController.object(at: indexPath)
+
     cell.textLabel?.text = list.title
-    
     return cell
   }
 }

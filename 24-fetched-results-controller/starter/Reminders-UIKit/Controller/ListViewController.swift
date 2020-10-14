@@ -34,8 +34,9 @@ import CoreData
 import UIKit
 
 class ListViewController: UITableViewController {
+
   var context: NSManagedObjectContext?
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
     setupViews()
@@ -70,12 +71,12 @@ extension ListViewController {
     guard let indexPath = tableView.indexPathForSelectedRow else {
       return
     }
-    
-    remindersViewController.context = self.context
+
+    remindersViewController.context = context
   }
   
   private func handleAddNewListSegue(newListViewController: NewListViewController) {
-    newListViewController.context = self.context
+    newListViewController.context = context
   }
 }
 

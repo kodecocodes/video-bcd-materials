@@ -30,8 +30,8 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
-import UIKit
 import CoreData
+import UIKit
 
 final class NewReminderViewController: UITableViewController {
   @IBOutlet weak var titleTextField: UITextField!
@@ -39,7 +39,7 @@ final class NewReminderViewController: UITableViewController {
   var context: NSManagedObjectContext?
   var list: List?
   var attachment: Data?
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
   }
@@ -49,13 +49,15 @@ final class NewReminderViewController: UITableViewController {
   }
   
   @IBAction func saveReminder(_ sender: Any) {
-    guard let title = titleTextField.text, let context = self.context, let list = self.list else { return }
-    
+    guard let title = titleTextField.text else { return }
+    guard let context = context else { return }
+    guard let list = list else { return }
+
     let newReminder = Reminder(context: context)
     newReminder.title = title
     newReminder.list = list
     newReminder.attachment = attachment
-    
+
     do {
       try context.save()
       dismiss(animated: true, completion: nil)
@@ -86,7 +88,7 @@ extension NewReminderViewController: UIImagePickerControllerDelegate, UINavigati
   ) {
     guard let image = info[.originalImage] as? UIImage else { return }
     self.attachmentImageView.image = image
-    self.attachment = image.pngData()
+    attachment = image.pngData()
     
     dismiss(animated: true, completion: nil)
   }

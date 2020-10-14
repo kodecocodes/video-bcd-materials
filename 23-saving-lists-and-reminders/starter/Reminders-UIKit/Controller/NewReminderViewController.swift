@@ -30,12 +30,15 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
+import CoreData
 import UIKit
 
 final class NewReminderViewController: UITableViewController {
   @IBOutlet weak var titleTextField: UITextField!
   @IBOutlet weak var attachmentImageView: UIImageView!
-  
+  var context: NSManagedObjectContext?
+  var list: List?
+
   override func viewDidLoad() {
     super.viewDidLoad()
   }
@@ -46,8 +49,19 @@ final class NewReminderViewController: UITableViewController {
   
   @IBAction func saveReminder(_ sender: Any) {
     guard let title = titleTextField.text else { return }
-    
-    // Add code here
+    guard let context = context else { return }
+    guard let list = list else { return }
+
+    let newReminder = Reminder(context: context)
+    newReminder.title = title
+    newReminder.list = list
+
+    do {
+      try context.save()
+      dismiss(animated: true, completion: nil)
+    } catch {
+      fatalError("Core Data save error")
+    }
   }
 }
 
