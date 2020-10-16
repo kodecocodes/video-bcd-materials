@@ -8,4 +8,5 @@ Each edition has its own branch, named `versions/[VERSION]`. The default branch 
 
 | Branch                                                                                 | Version | Release Date |
 | -------------------------------------------------------------------------------------- |:-------:|:------------:|
+| [versions/5.1](https://github.com/raywenderlich/video-bcd-materials/tree/versions/5.1) | 5.1     | 2020-10-16   |
 | [versions/5.0](https://github.com/raywenderlich/video-bcd-materials/tree/versions/5.0) | 5.0     | 2020-08-25   |
