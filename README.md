@@ -1,6 +1,6 @@
-# Beginning Core Data: Materials
+# Core Data: Fundamentals: Materials
 
-This repo contains all the downloadable materials and projects associated with the **[Beginning Core Data](https://www.raywenderlich.com/27468235-beginning-core-data)** from [raywenderlich.com](https://www.raywenderlich.com).
+This repo contains all the downloadable materials and projects associated with the **[Core Data: Fundamentals](https://www.raywenderlich.com/27468235-beginning-core-data)** from [raywenderlich.com](https://www.raywenderlich.com).
 
 Each edition has its own branch, named `versions/[VERSION]`. The default branch for this repo is for the most recent edition.
 
